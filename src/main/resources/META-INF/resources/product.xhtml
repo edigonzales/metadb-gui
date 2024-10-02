@@ -24,61 +24,94 @@
     </h:head>
     
     <h:body>
-    
-		<h:form>
+	    <div id="container">
+			<h:form>
 		        <h:dataTable value="#{productView.products}" var="product">
 		            <h:column>
 		                <f:facet name="header">Typ</f:facet>
-                        <!--<h:outputText value="#{product.dtype()}" />-->
-                        <h:panelGroup rendered="#{fn:contains(product.dtype(), 'LayerGroup')}">
-	                         <acronym title="Layergruppe"><i class="bi bi-plus-square"></i></acronym>
-                        </h:panelGroup>                        
-                        <h:panelGroup rendered="#{fn:contains(product.dtype(), 'TableView')}">
-                            <acronym title="Einzellayer"><i class="bi bi-layers"></i></acronym>
-                        </h:panelGroup>                        
-                        <h:panelGroup rendered="#{fn:contains(product.dtype(), 'ExternalWmsLayers')}">
-                            <acronym title="Externer Layer"><i class="bi bi-box-arrow-up-right"></i></acronym>
-                        </h:panelGroup>                               
                         <f:passThroughAttribute name="data-label" value="Typ" />
+	                    <!--<h:outputText value="#{product.dtype()}" />-->
+	                    <h:panelGroup rendered="#{fn:contains(product.dtype(), 'LayerGroup')}">
+	                       <acronym title="Layergruppe"><i class="bi bi-plus-square"></i></acronym>
+	                    </h:panelGroup>                        
+	                    <h:panelGroup rendered="#{fn:contains(product.dtype(), 'TableView') or fn:contains(product.dtype(), 'FacadeLayer')}">
+	                       <acronym title="Einzellayer"><i class="bi bi-layers"></i></acronym>
+	                    </h:panelGroup>                        
+	                    <h:panelGroup rendered="#{fn:contains(product.dtype(), 'ExternalWmsLayers')}">
+	                       <acronym title="Externer Layer"><i class="bi bi-box-arrow-up-right"></i></acronym>
+	                    </h:panelGroup> 
 		            </h:column>
 		            <h:column>
 		                <f:facet name="header">Titel</f:facet>
-		                <h:outputText value="#{product.title()}" />
                         <f:passThroughAttribute name="data-label" value="Titel" />
+		                <h:outputText value="#{product.title()}" />
 		            </h:column>
 		            <h:column>
 		                <f:facet name="header">Description</f:facet>
-		                <h:outputText value="#{empty product.description() ? '&#xA0;' : product.description() }" />
                         <f:passThroughAttribute name="data-label" value="Description" />
+		                <h:outputText value="#{empty product.description() ? '&#xA0;' : product.description() }" escape="false" />
 		            </h:column>     
-                    <h:column>
+	                <h:column>
                         <f:facet name="header">Web GIS Client</f:facet>
-                        <h:outputText value="#{product.ident_part()}" />
                         <f:passThroughAttribute name="data-label" value="Web GIS Client" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Zugangsberechtigung</f:facet>
-                        <!-- <h:outputText value="#{product.permissions()}" /> -->
-                        <h:panelGroup rendered="#{fn:contains(product.permissions(), 'public')}">
-                             <acronym title="öffentlich"><i class="bi bi-unlock"></i></acronym>
-                        </h:panelGroup>                        
-                        <h:panelGroup rendered="#{not fn:contains(product.permissions(), 'public') and not empty product.permissions()}">
-                             <acronym title="nicht öffentlich"><i class="bi bi-lock"></i></acronym>
-                        </h:panelGroup>                        
-                        <h:panelGroup rendered="#{empty product.permissions()}">
+                        <h:panelGroup rendered="#{fn:contains(product.display_text(), 'WGC')}">
+                            <h:panelGroup rendered="#{product.transparency() ge 0}">
+	                            <h:outputLink value="https://geo.so.ch/map/?t=default&amp;l=#{product.ident_part()}[#{product.transparency()}]" escape="false">
+	                                <f:passThroughAttribute name="target" value="_blank" />
+	                                <i class="bi bi-box-arrow-up-right"/>
+	                            </h:outputLink>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{product.transparency() eq null}">
+                                <h:outputLink value="https://geo.so.ch/map/?t=default&amp;l=#{product.ident_part()}" escape="false">
+                                    <f:passThroughAttribute name="target" value="_blank" />
+                                    <i class="bi bi-box-arrow-up-right"/>
+                                </h:outputLink>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                        
+                        <h:panelGroup rendered="#{not fn:contains(product.display_text(), 'WGC')}">
                             <h:outputText value="&#xA0;" />
                         </h:panelGroup>
-                        <f:passThroughAttribute name="data-label" value="Zugangsberechtigung" />
                     </h:column>
                     <h:column>
-                        <f:facet name="header">Dienste</f:facet>
-                        <h:outputText value="#{product.display_text()}" />
-                        <f:passThroughAttribute name="data-label" value="Dienste" />
+		                <f:facet name="header">Berechtigung</f:facet>
+                        <f:passThroughAttribute name="data-label" value="Berechtigung" />
+		                <!-- <h:outputText value="#{product.permissions()}" /> -->
+		                <h:panelGroup rendered="#{fn:contains(product.permissions(), 'public')}">
+		                     <acronym title="öffentlich"><i class="bi bi-unlock"></i></acronym>
+		                </h:panelGroup>                        
+		                <h:panelGroup rendered="#{not fn:contains(product.permissions(), 'public') and not empty product.permissions()}">
+		                     <acronym title="nicht öffentlich"><i class="bi bi-lock"></i></acronym>
+		                </h:panelGroup>                        
+		                <h:panelGroup rendered="#{empty product.permissions()}">
+		                    <h:outputText value="&#xA0;" />
+		                </h:panelGroup>
                     </h:column>
-                    
+	                <h:column>
+	                    <f:facet name="header">Dienste</f:facet>
+                        <f:passThroughAttribute name="data-label" value="Dienste" />
+                        <h:panelGroup rendered="#{fn:contains(product.display_text(), 'Nur WMS')}">
+                            <span class="badge">WMS</span>     
+                            <h:outputText value="&#xA0;" />       
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{fn:contains(product.display_text(), 'WGC, QGIS u. WMS')}">
+                            <span class="badge">Karte</span>
+                            <h:outputText value="&#xA0;" />   
+                            <h:panelGroup rendered="#{not fn:contains(product.dtype(), 'ExternalWmsLayers')}">
+	                            <span class="badge">WMS</span>
+	                            <h:outputText value="&#xA0;" />            
+                            </h:panelGroup> 
+                            <span class="badge">QGIS</span>
+                            <h:outputText value="&#xA0;" />
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{product.service_download()}">
+                            <span class="badge">Data</span>            
+                        </h:panelGroup>
+	                    <!-- <h:outputText value="#{product.display_text()}" />  -->         
+                    </h:column> 
 		        </h:dataTable>
-		    </h:form>
-
+			</h:form>
+	    </div>  
     </h:body>
 </f:view>
 </html>

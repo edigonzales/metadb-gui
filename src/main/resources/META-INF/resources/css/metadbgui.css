@@ -4,6 +4,24 @@ body {
     /*margin: 20px;*/
 }
 
+#container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1800px;
+    max-width: 98%;
+    background-color: #FFFFFF;        
+}
+
+.badge {
+    font-size: 0.8em;
+    background-color: #E0E0E0;
+    color: rgb(51, 51, 51);
+    padding: 3px 6px;
+    text-align: center;
+    border-radius: 3px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
 table {
   /*border: 1px solid #ccc;*/
   border-collapse: collapse;
@@ -36,6 +54,22 @@ table th {
   letter-spacing: .1em;
   /*text-transform: uppercase;*/
 }
+
+a {
+    color: #c62828;
+    text-decoration: none !important;
+}  
+
+a:hover {
+    color: #c62828;
+    text-decoration: underline !important;
+}  
+
+a:visited {
+    color: #c62828; 
+    text-decoration: underline !important;
+}  
+
 
 @media screen and (max-width: 600px) {
   table {
