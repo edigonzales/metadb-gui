@@ -14,6 +14,8 @@ public record Product(
         String style_server,
         Boolean service_download,
         String transparency,
+        String theme_title,
+        String theme_ident,
         String org_name,
         String permissions
         ) {}

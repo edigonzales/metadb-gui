@@ -15,7 +15,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         
-        <title>Karten- und Datenlayer • Kanton Solothurn</title>
+        <title>Kartenkatalog • Kanton Solothurn</title>
         
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
         
@@ -24,17 +24,40 @@
     </h:head>
     
     <h:body>
-	    <div id="container">
+	    <div id="container">	
+            <div class="logo">
+                <div>   
+                    <h:graphicImage name="images/Logo.png" alt="Logo Kanton"/>
+                </div>
+            </div>
+	    
+<ul class="breadcrumb">
+  <li><a href="https://geo.so.ch"><i class="bi bi-house-door-fill"></i>&#xA0;Home</a></li>
+  <!--<li><a href="#">Karten- und Datenebenen</a></li>-->
+  <li>Kartenkatalog</li>
+</ul>
+
+	    
+            <div class="title">Kartenkatalog</div>
+            <div class="info">Lorem ipsum odor amet, consectetuer adipiscing elit. Nisi donec vulputate posuere auctor dictum ante. Eu convallis mi consequat per sollicitudin vestibulum odio ut maximus. Maecenas tellus sodales eget nunc volutpat nam integer? Efficitur lobortis posuere aptent id aliquam nec nibh litora. Accumsan enim feugiat morbi, integer pharetra ad. Nec aenean rhoncus ridiculus arcu sapien est vitae. Natoque nisl arcu habitasse morbi netus egestas justo. Rhoncus tellus pellentesque vivamus purus phasellus varius suscipit.
+            <br/><br/>Ad diam tristique netus conubia dui maecenas pretium aenean. Ridiculus dictum ligula pretium, ridiculus maecenas tortor. Velit pulvinar lectus hac pretium inceptos duis? Tristique facilisi neque odio; dapibus praesent lobortis. Proin ex gravida magnis scelerisque tristique venenatis. Ligula ex facilisis montes vestibulum vel etiam non?</div>	        
+			
 			<h:form>
-		        <h:dataTable value="#{productView.products}" var="product">
+                <h:inputText value="#{personBean.filterLastName}" style="width:100%;padding: 12px 20px;margin: 35px 0;box-sizing: border-box;background-color:#F5F5F5;border:none;border-bottom:1px solid #989898;">
+                    <f:passThroughAttribute name="placeholder" value="Suche..." />                
+                </h:inputText>
+			
+                <h:dataTable value="#{productView.products}" var="product">
+                <!-- <h:dataTable value="#{productView.products}" var="product" >-->
 		            <h:column>
 		                <f:facet name="header">Typ</f:facet>
                         <f:passThroughAttribute name="data-label" value="Typ" />
+                        <f:passThroughAttribute name="class" value="col-typ" />
 	                    <!--<h:outputText value="#{product.dtype()}" />-->
 	                    <h:panelGroup rendered="#{fn:contains(product.dtype(), 'LayerGroup')}">
 	                       <acronym title="Layergruppe"><i class="bi bi-plus-square"></i></acronym>
 	                    </h:panelGroup>                        
-	                    <h:panelGroup rendered="#{fn:contains(product.dtype(), 'TableView') or fn:contains(product.dtype(), 'FacadeLayer')}">
+	                    <h:panelGroup rendered="#{fn:contains(product.dtype(), 'TableView') or fn:contains(product.dtype(), 'FacadeLayer') or fn:contains(product.dtype(), 'RasterView')}">
 	                       <acronym title="Einzellayer"><i class="bi bi-layers"></i></acronym>
 	                    </h:panelGroup>                        
 	                    <h:panelGroup rendered="#{fn:contains(product.dtype(), 'ExternalWmsLayers')}">
@@ -44,16 +67,19 @@
 		            <h:column>
 		                <f:facet name="header">Titel</f:facet>
                         <f:passThroughAttribute name="data-label" value="Titel" />
+                        <f:passThroughAttribute name="class" value="col-title" />
 		                <h:outputText value="#{product.title()}" />
 		            </h:column>
 		            <h:column>
-		                <f:facet name="header">Description</f:facet>
+		                <f:facet name="header">Beschreibung</f:facet>
                         <f:passThroughAttribute name="data-label" value="Description" />
+                        <f:passThroughAttribute name="class" value="col-description" />
 		                <h:outputText value="#{empty product.description() ? '&#xA0;' : product.description() }" escape="false" />
 		            </h:column>     
 	                <h:column>
                         <f:facet name="header">Web GIS Client</f:facet>
                         <f:passThroughAttribute name="data-label" value="Web GIS Client" />
+                        <f:passThroughAttribute name="class" value="col-wgc" />
                         <h:panelGroup rendered="#{fn:contains(product.display_text(), 'WGC')}">
                             <h:panelGroup rendered="#{product.transparency() ge 0}">
 	                            <h:outputLink value="https://geo.so.ch/map/?t=default&amp;l=#{product.ident_part()}[#{product.transparency()}]" escape="false">
@@ -68,7 +94,6 @@
                                 </h:outputLink>
                             </h:panelGroup>
                         </h:panelGroup>
-                        
                         <h:panelGroup rendered="#{not fn:contains(product.display_text(), 'WGC')}">
                             <h:outputText value="&#xA0;" />
                         </h:panelGroup>
@@ -76,21 +101,24 @@
                     <h:column>
 		                <f:facet name="header">Berechtigung</f:facet>
                         <f:passThroughAttribute name="data-label" value="Berechtigung" />
+                        <f:passThroughAttribute name="class" value="col-permissions" />
 		                <!-- <h:outputText value="#{product.permissions()}" /> -->
-		                <h:panelGroup rendered="#{fn:contains(product.permissions(), 'public')}">
+		                <h:panelGroup rendered="#{fn:contains(product.permissions(), 'public') or fn:contains(product.dtype(), 'ExternalWmsLayers')}">
 		                     <acronym title="öffentlich"><i class="bi bi-unlock"></i></acronym>
 		                </h:panelGroup>                        
 		                <h:panelGroup rendered="#{not fn:contains(product.permissions(), 'public') and not empty product.permissions()}">
 		                     <acronym title="nicht öffentlich"><i class="bi bi-lock"></i></acronym>
 		                </h:panelGroup>                        
-		                <h:panelGroup rendered="#{empty product.permissions()}">
-		                    <h:outputText value="&#xA0;" />
+		                <h:panelGroup rendered="#{empty product.permissions() and not fn:contains(product.dtype(), 'ExternalWmsLayers')}">
+		                    <!-- <h:outputText value="&#xA0;" /> -->
+		                    <i class="bi bi-question-circle"></i>
 		                </h:panelGroup>
                     </h:column>
 	                <h:column>
 	                    <f:facet name="header">Dienste</f:facet>
                         <f:passThroughAttribute name="data-label" value="Dienste" />
-                        <h:panelGroup rendered="#{fn:contains(product.display_text(), 'Nur WMS')}">
+                        <f:passThroughAttribute name="class" value="col-services" />
+                        <h:panelGroup rendered="#{fn:contains(product.display_text(), 'Nur WMS') and not empty product.style_server()}">
                             <span class="badge">WMS</span>     
                             <h:outputText value="&#xA0;" />       
                         </h:panelGroup>

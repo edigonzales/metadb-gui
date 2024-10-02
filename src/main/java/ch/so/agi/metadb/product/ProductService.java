@@ -33,6 +33,8 @@ SELECT
     dsw.style_server,
     dsw.service_download,
     sa.transparency,
+    st.title AS theme_title,
+    st.identifier AS theme_ident,
     sou."name" AS org_name,
     json_agg(r."name") FILTER (WHERE r."name" IS NOT NULL) AS permissions
 FROM 
@@ -58,7 +60,7 @@ WHERE
     AND 
     dp.dtype NOT IN ('simiProduct_Map') 
 GROUP BY 
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 ORDER BY
      dp.title          
                 """;

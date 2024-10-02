@@ -27,8 +27,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     
-    implementation platform('org.joinfaces:joinfaces-platform:5.3.3')
+    implementation platform('org.joinfaces:joinfaces-platform:5.3.4')
     implementation 'org.joinfaces:faces-spring-boot-starter'
+    
+    /*
+    implementation 'org.joinfaces:tobago-spring-boot-starter:5.3.4'
+    implementation "org.joinfaces:myfaces-spring-boot-starter"
+    modules {
+        module("org.joinfaces:mojarra4-spring-boot-starter") {
+            replacedBy("org.joinfaces:myfaces4-spring-boot-starter", "Use MyFaces instead of Mojarra")
+        }
+    }
+    */
+    
     //implementation 'org.joinfaces:primefaces-spring-boot-starter'
     //implementation 'org.webjars.npm:primeflex:3.3.1'
 
