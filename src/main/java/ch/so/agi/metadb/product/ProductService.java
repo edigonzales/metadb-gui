@@ -17,8 +17,33 @@ public class ProductService {
         this.jdbcClient = jdbcClient;
     }
     
-    public List<Product> findAll() {
+    public List<Product> findAll() {        
+        List<Product> products = jdbcClient.sql(baseStatement).query(Product.class).list();
+        return products;
+    }
+    
+    public List<Product> findByFilter(String filter) {
+        
         String stmt = """
+SELECT 
+    *
+FROM 
+(
+%s
+) AS foo
+WHERE 
+    title ILIKE '%s'
+    OR 
+    description ILIKE '%s'
+ORDER BY
+    title
+                """.formatted(baseStatement, "%"+filter+"%", "%"+filter+"%");
+        
+        List<Product> products = jdbcClient.sql(stmt).query(Product.class).list();
+        return products;
+    }
+    
+    private String baseStatement = """
 SELECT 
     dp.id,
     dp.dtype,
@@ -63,13 +88,7 @@ GROUP BY
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
 ORDER BY
      dp.title          
-                """;
-        
-        List<Product> products = jdbcClient.sql(stmt).query(Product.class).list();
-        return products;
-    }
-    
-    
+            """;
     
 }
 
